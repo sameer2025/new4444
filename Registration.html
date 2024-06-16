@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Form</title>
+    <title>Registration</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -32,10 +32,7 @@
             margin: 10px 0 5px;
             color: #555;
         }
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        select {
+        input[type="text"], input[type="email"], input[type="password"] {
             width: calc(100% - 22px);
             padding: 10px;
             margin-bottom: 10px;
@@ -73,106 +70,67 @@
 </head>
 <body>
     <div class="container">
-        <h2>Registration Form</h2>
+        <h2>Register</h2>
         <form id="registrationForm">
             <label>First Name:</label>
             <input type="text" name="FirstName" placeholder="First Name" required>
-            
+
             <label>Last Name:</label>
             <input type="text" name="LastName" placeholder="Last Name" required>
-            
+
             <label>Current Post:</label>
             <input type="text" name="CurrentPost" placeholder="Current Post" required>
-            
+
             <label>Current Postings District:</label>
             <input type="text" name="CurrentPostingsDistrict" placeholder="Current Postings District" required>
-            
+
             <label>Where to Go:</label>
             <input type="text" name="WhereToGo" placeholder="Where to Go" required>
-            
+
             <label>Home Town:</label>
             <input type="text" name="HomeTown" placeholder="Home Town" required>
-            
+
             <label>Email:</label>
             <input type="email" name="Email" placeholder="Email" required>
-            
+
             <label>Gender:</label>
             <select name="Gender" required>
-                <option value="">Please select one…</option>
-                <option value="female">Female</option>
-                <option value="male">Male</option>
-                <option value="prefer_not_to_answer">Prefer not to answer</option>
+                <option value="">Please select one...</option>
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Prefer not to answer">Prefer not to answer</option>
             </select>
-            
+
             <label>Password:</label>
             <input type="password" name="Password" placeholder="Password" required>
-            
+
             <input type="submit" value="Register">
-            
+
             <div class="extra-links">
                 <a href="Login.html">Already registered? Login</a>
             </div>
         </form>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-    <script>
-        // Initialize Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyD4v68_Ohl_pjHeSWmDC0ky65AcI9EdzKA",
-            authDomain: "register-form-7255f.firebaseapp.com",
-            databaseURL: "https://register-form-7255f-default-rtdb.firebaseio.com",
-            projectId: "register-form-7255f",
-            storageBucket: "register-form-7255f.appspot.com",
-            messagingSenderId: "182874977751",
-            appId: "1:182874977751:web:c6841663c6d7769edfc792",
-            measurementId: "G-7N02B4267T"
-        };
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+    <script type="module">
+        import { auth } from './firebaseConfig.js';
+        import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         // Handle form submission
         const form = document.getElementById('registrationForm');
         form.addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent form from submitting
             const formData = new FormData(form);
-            const firstName = formData.get('FirstName');
-            const lastName = formData.get('LastName');
-            const currentPost = formData.get('CurrentPost');
-            const currentPostingsDistrict = formData.get('CurrentPostingsDistrict');
-            const whereToGo = formData.get('WhereToGo');
-            const homeTown = formData.get('HomeTown');
             const email = formData.get('Email');
-            const gender = formData.get('Gender');
             const password = formData.get('Password');
 
-            // Create user with Firebase Authentication
-            auth.createUserWithEmailAndPassword(email, password)
+            createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    const user = userCredential.user;
-                    // Save additional user info in Firestore
-                    return db.collection('users').doc(user.uid).set({
-                        firstName,
-                        lastName,
-                        currentPost,
-                        currentPostingsDistrict,
-                        whereToGo,
-                        homeTown,
-                        email,
-                        gender
-                    });
-                })
-                .then(() => {
                     alert("Registration Successful!");
-                    window.location.href = "Dashboard.html";
+                    window.location.href = "Login.html";
                 })
                 .catch((error) => {
-                    console.error("Error creating user: ", error);
+                    console.error("Error in registration: ", error);
                     alert("Error in registration: " + error.message);
                 });
         });
